@@ -2,6 +2,8 @@
 
 public class PlayerController : PlanetMovement
 {
+	public static PlayerController instance;
+
 	public float sprintSpeed;
 	public float movementEnergyCost;
 	public float sprintEnergyCost;
@@ -18,9 +20,32 @@ public class PlayerController : PlanetMovement
 	float originalMovementSpeed;
 	float originalEnergyCost;
 
+	SpriteRenderer spriteRenderer;
+	Sprite originalSprite;
+
+	public bool sheltered;
+
+	public bool Sheltered {
+		get { return sheltered; }
+	}
+
+	public void Shelter()
+	{
+		sheltered = true;
+		spriteRenderer.sprite = null;
+	}
+
+	void Awake()
+	{
+		instance = this;
+	}
+
 	void Start()
 	{
 		playerState = GetComponent<PlayerState>();
+		spriteRenderer = GetComponent<SpriteRenderer>();
+
+		originalSprite = spriteRenderer.sprite;
 
 		originalMovementSpeed = movementSpeed;
 		originalEnergyCost = movementEnergyCost;
@@ -35,6 +60,8 @@ public class PlayerController : PlanetMovement
 
 	void Move()
 	{
+		if (sheltered) return;
+
 		if (Input.GetKeyDown(KeyCode.LeftShift)) {
 			movementEnergyCost = sprintEnergyCost;
 			movementSpeed = sprintSpeed;
@@ -58,9 +85,14 @@ public class PlayerController : PlanetMovement
 	{
 		FindItemForSelection();
 
-		if (Input.GetKeyDown(KeyCode.Space) && highlighted != null) {
-			highlighted.Use();
-			highlighted = null;
+		if (Input.GetKeyDown(KeyCode.Space)) {
+			if (sheltered) {
+				sheltered = false;
+				spriteRenderer.sprite = originalSprite;
+			} else if (highlighted != null) {
+				highlighted.Use();
+				highlighted = null;
+			}
 		}
 	}
 

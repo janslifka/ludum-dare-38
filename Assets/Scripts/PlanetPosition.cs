@@ -17,6 +17,5 @@ public class PlanetPosition : MonoBehaviour
 		transform.position = planetPosition + new Vector3(0, distance, 0);
 		transform.rotation = Quaternion.identity;
 		transform.RotateAround(planetPosition, Vector3.forward, angle);
-		
 	}
 }

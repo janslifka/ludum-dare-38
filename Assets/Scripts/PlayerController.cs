@@ -2,11 +2,29 @@
 
 public class PlayerController : PlanetMovement
 {
+	public float sprintSpeed;
+	public float movementEnergyCost;
+	public float sprintEnergyCost;
+
+	public int smallCarrotValue;
+	public int bigCarrotValue;
+
 	public LayerMask activeObjects;
 	public GameObject carrotPrefab;
 
 	ActiveObject highlighted;
+	PlayerState playerState;
 
+	float originalMovementSpeed;
+	float originalEnergyCost;
+
+	void Start()
+	{
+		playerState = GetComponent<PlayerState>();
+
+		originalMovementSpeed = movementSpeed;
+		originalEnergyCost = movementEnergyCost;
+	}
 
 	void Update()
 	{
@@ -17,10 +35,22 @@ public class PlayerController : PlanetMovement
 
 	void Move()
 	{
-		if (Input.GetAxis("Horizontal") > 0) {
-			MoveRight();
-		} else if (Input.GetAxis("Horizontal") < 0) {
-			MoveLeft();
+		if (Input.GetKeyDown(KeyCode.LeftShift)) {
+			movementEnergyCost = sprintEnergyCost;
+			movementSpeed = sprintSpeed;
+		} else if (Input.GetKeyUp(KeyCode.LeftShift)) {
+			movementEnergyCost = originalEnergyCost;
+			movementSpeed = originalMovementSpeed;
+		}
+
+		if (playerState.Energy >= movementEnergyCost * Time.deltaTime) {
+			if (Input.GetAxis("Horizontal") > 0) {
+				MoveRight();
+				playerState.Energy -= movementEnergyCost * Time.deltaTime;
+			} else if (Input.GetAxis("Horizontal") < 0) {
+				MoveLeft();
+				playerState.Energy -= movementSpeed * Time.deltaTime;
+			}
 		}
 	}
 
@@ -38,6 +68,14 @@ public class PlayerController : PlanetMovement
 	{
 		if (Input.GetKeyDown(KeyCode.Alpha1)) {
 			PlantCarrot();
+		}
+
+		if (Input.GetKeyDown(KeyCode.Alpha2)) {
+			EatSmallCarrot();
+		}
+
+		if (Input.GetKey(KeyCode.Alpha3)) {
+			EatBigCarrot();
 		}
 	}
 
@@ -80,8 +118,24 @@ public class PlayerController : PlanetMovement
 			var carrotPosition = carrot.GetComponent<PlanetPosition>();
 			carrotPosition.angle = angle;
 			carrotPosition.RecalculatePosition();
-
 			Inventory.instance.Seeds--;
 		}
 	}
+
+	void EatSmallCarrot()
+	{
+		if (Inventory.instance.SmallCarrots > 0) {
+			playerState.Hunger += smallCarrotValue;
+			Inventory.instance.SmallCarrots--;
+		}
+	}
+
+	void EatBigCarrot()
+	{
+		if (Inventory.instance.BigCarrots > 0) {
+			playerState.Hunger += bigCarrotValue;
+			Inventory.instance.BigCarrots--;
+		}
+	}
+
 }

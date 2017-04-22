@@ -1,11 +1,11 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
-public class Carrot : MonoBehaviour
+public class Carrot : ActiveObject
 {
-	public enum State {
+	public enum State
+	{
 		Seed,
 		Young,
 		Grown,
@@ -26,19 +26,64 @@ public class Carrot : MonoBehaviour
 
 	public State state;
 
+	public Color highlightColor;
+	public Color standardColor;
+
+	new Collider2D collider2D;
 	SpriteRenderer spriteRenderer;
+
+	public override void Use()
+	{
+		bool destroy = false;
+		switch (state) {
+			case State.Young:
+				Inventory.instance.SmallCarrots++;
+				destroy = true;
+				break;
+			case State.Grown:
+				Inventory.instance.BigCarrots++;
+				destroy = true;
+				break;
+			case State.Bloom:
+				Inventory.instance.Seeds += Random.Range(2, 6);
+				destroy = true;
+				break;
+		}
+
+		if (destroy) {
+			Destroy(gameObject);
+		}
+	}
+
+	public override void Highlight()
+	{
+		spriteRenderer.color = highlightColor;
+	}
+
+	public override void Unhighlight()
+	{
+		spriteRenderer.color = standardColor;
+	}
 
 	void Start()
 	{
+		collider2D = GetComponent<Collider2D>();
+
 		spriteRenderer = GetComponent<SpriteRenderer>();
+		spriteRenderer.color = standardColor;
 
-		SetSprite();
-
+		SetState(State.Seed);
 		StartCoroutine(LifeCycle());
 	}
 
 	void SetState(State toState)
 	{
+		if (toState == State.Seed) {
+			collider2D.enabled = false;
+		} else {
+			collider2D.enabled = true;
+		}
+
 		state = toState;
 		SetSprite();
 	}
@@ -47,7 +92,7 @@ public class Carrot : MonoBehaviour
 	{
 		Sprite sprite = null;
 
-		switch(state) {
+		switch (state) {
 			case State.Seed:
 				sprite = seedSprite;
 				break;

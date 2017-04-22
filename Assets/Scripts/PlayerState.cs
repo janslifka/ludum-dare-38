@@ -33,6 +33,10 @@ public class PlayerState : MonoBehaviour
 		set {
 			hunger = Mathf.Clamp(value, 0, 100);
 			UpdateUI();
+
+			if (hunger <= 0) {
+				GameMaster.instance.Die();
+			}
 		}
 	}
 

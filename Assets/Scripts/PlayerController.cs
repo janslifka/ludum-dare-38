@@ -3,18 +3,16 @@
 public class PlayerController : PlanetMovement
 {
 	public LayerMask activeObjects;
+	public GameObject carrotPrefab;
 
 	ActiveObject highlighted;
+
 
 	void Update()
 	{
 		Move();
-		FindItemForSelection();
-
-		if (Input.GetKeyDown(KeyCode.Return) && highlighted != null) {
-			highlighted.Use();
-			highlighted = null;
-		}
+		HandleActiveItems();
+		HandleInventoryItemsUsage();
 	}
 
 	void Move()
@@ -23,6 +21,23 @@ public class PlayerController : PlanetMovement
 			MoveRight();
 		} else if (Input.GetAxis("Horizontal") < 0) {
 			MoveLeft();
+		}
+	}
+
+	void HandleActiveItems()
+	{
+		FindItemForSelection();
+
+		if (Input.GetKeyDown(KeyCode.Space) && highlighted != null) {
+			highlighted.Use();
+			highlighted = null;
+		}
+	}
+
+	void HandleInventoryItemsUsage()
+	{
+		if (Input.GetKeyDown(KeyCode.Alpha1)) {
+			PlantCarrot();
 		}
 	}
 
@@ -56,5 +71,17 @@ public class PlayerController : PlanetMovement
 
 		item.Highlight();
 		highlighted = item;
+	}
+
+	void PlantCarrot()
+	{
+		if (Inventory.instance.Seeds > 0) {
+			var carrot = Instantiate(carrotPrefab, planet.transform.position, Quaternion.identity);
+			var carrotPosition = carrot.GetComponent<PlanetPosition>();
+			carrotPosition.angle = angle;
+			carrotPosition.RecalculatePosition();
+
+			Inventory.instance.Seeds--;
+		}
 	}
 }

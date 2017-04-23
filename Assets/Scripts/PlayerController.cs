@@ -33,6 +33,9 @@ public class PlayerController : PlanetMovement
 	{
 		sheltered = true;
 		spriteRenderer.sprite = null;
+
+		movementEnergyCost = originalEnergyCost;
+		movementSpeed = originalMovementSpeed;
 	}
 
 	void Awake()

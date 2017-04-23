@@ -110,7 +110,7 @@ public class PlayerController : PlanetMovement
 
 	void FindItemForSelection()
 	{
-		var hitColliders = Physics2D.OverlapCircleAll(transform.position, 0.48f, activeObjects);
+		var hitColliders = Physics2D.OverlapCircleAll(transform.position, 0.32f, activeObjects);
 
 		GameObject closest = null;
 

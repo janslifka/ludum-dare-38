@@ -8,8 +8,7 @@ public class Shelter : ActiveObject
 {
 	public Color highlightColor;
 	public Color standardColor;
-
-	SpriteRenderer spriteRenderer;
+	public SpriteRenderer spriteRenderer;
 
 	public override void Highlight()
 	{
@@ -28,7 +27,6 @@ public class Shelter : ActiveObject
 
 	void Start()
 	{
-		spriteRenderer = GetComponent<SpriteRenderer>();
 		spriteRenderer.color = standardColor;
 	}
 }

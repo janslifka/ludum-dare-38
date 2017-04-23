@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(SpriteRenderer))]
 public class Carrot : ActiveObject
 {
 	public enum State
@@ -30,7 +29,7 @@ public class Carrot : ActiveObject
 	public Color standardColor;
 
 	new Collider2D collider2D;
-	SpriteRenderer spriteRenderer;
+	public SpriteRenderer spriteRenderer;
 
 	public override void Use()
 	{
@@ -68,8 +67,6 @@ public class Carrot : ActiveObject
 	void Start()
 	{
 		collider2D = GetComponent<Collider2D>();
-
-		spriteRenderer = GetComponent<SpriteRenderer>();
 		spriteRenderer.color = standardColor;
 
 		SetState(State.Seed);

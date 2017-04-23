@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameMaster : MonoBehaviour
 {
@@ -33,10 +34,25 @@ public class GameMaster : MonoBehaviour
 	public void Die()
 	{
 		deadPanel.SetActive(true);
-		elapsedTime.text = FormatTime(Time.time);
+		var elapsed = Time.time - startTime;
+		elapsedTime.text = FormatTime(elapsed);
 		difficultyText.text = difficulty;
 
+		if (elapsed > PlayerPrefs.GetFloat(difficulty, 0)) {
+			PlayerPrefs.SetFloat(difficulty, elapsed);
+		}
+
 		Time.timeScale = 0;
+	}
+
+	public void LoadMainMenu()
+	{
+		SceneManager.LoadScene("Menu");
+	}
+
+	public void TryAgain()
+	{
+		SceneManager.LoadScene("Game");
 	}
 
 	void Awake()
@@ -46,6 +62,10 @@ public class GameMaster : MonoBehaviour
 
 	void Start()
 	{
+		Time.timeScale = 1;
+
+		startTime = Time.time;
+
 		ChooseDifficulty();
 
 		deadPanel.SetActive(false);
@@ -63,7 +83,7 @@ public class GameMaster : MonoBehaviour
 	{
 		difficulty = PlayerPrefs.GetString("difficulty", "easy");
 
-		if (difficulty != "easy" || difficulty != "medium" || difficulty != "hard") {
+		if (difficulty != "easy" && difficulty != "medium" && difficulty != "hard") {
 			difficulty = "easy";
 		}
 
@@ -100,7 +120,7 @@ public class GameMaster : MonoBehaviour
 
 	void UpdateTimerText()
 	{
-		time.text = FormatTime(Time.time);
+		time.text = FormatTime(Time.time - startTime);
 	}
 
 	string FormatTime(float time)

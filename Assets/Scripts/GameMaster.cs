@@ -17,6 +17,9 @@ public class GameMaster : MonoBehaviour
 	public GameObject carrotPrefab;
 	public int carrotCount;
 
+	public GameObject shelterPrefab;
+	public int shelterCount;
+
 	float startTime;
 
 	public void Die()
@@ -36,18 +39,9 @@ public class GameMaster : MonoBehaviour
 	{
 		deadPanel.SetActive(false);
 
-		SpawnEagles();
-		SpawnCarrots();
-	}
-
-	void SpawnEagles()
-	{
 		SpawnObject(eaglePrefab, eagleCount, 50, 310);
-	}
-
-	void SpawnCarrots()
-	{
 		SpawnObject(carrotPrefab, carrotCount, -360, 360);
+		SpawnObject(shelterPrefab, shelterCount, 0, 360);
 	}
 
 	void SpawnObject(GameObject prefab, int count, float positionFrom, float positionTo)

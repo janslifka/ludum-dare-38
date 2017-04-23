@@ -20,6 +20,10 @@ public class GameMaster : MonoBehaviour
 	public GameObject shelterPrefab;
 	public int shelterCount;
 
+	public GameObject treePrefab;
+	public int minTrees;
+	public int maxTrees;
+
 	float startTime;
 
 	public void Die()
@@ -45,9 +49,10 @@ public class GameMaster : MonoBehaviour
 		deadPanel.SetActive(false);
 
 		SpawnObject(eaglePrefab, eagleCount, 50, 310);
-		SpawnObject(carrotPrefab, carrotCount, -360, 360);
+		SpawnObject(carrotPrefab, carrotCount, 0, 360);
 		SpawnObject(shelterPrefab, 1, -10, 10); // 1 shelter nearby starting location
 		SpawnObject(shelterPrefab, shelterCount - 1, 0, 360);
+		SpawnObject(treePrefab, Random.Range(minTrees, maxTrees), 0, 360);
 	}
 
 	void SpawnObject(GameObject prefab, int count, float positionFrom, float positionTo)

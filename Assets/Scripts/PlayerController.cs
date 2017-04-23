@@ -111,7 +111,7 @@ public class PlayerController : PlanetMovement
 			EatSmallCarrot();
 		}
 
-		if (Input.GetKey(KeyCode.Alpha3)) {
+		if (Input.GetKeyDown(KeyCode.Alpha3)) {
 			EatBigCarrot();
 		}
 	}

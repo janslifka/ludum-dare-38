@@ -37,6 +37,8 @@ public class Inventory : MonoBehaviour
 		}
 	}
 
+	#region UnityLifecycle
+
 	void Awake()
 	{
 		instance = this;
@@ -46,6 +48,8 @@ public class Inventory : MonoBehaviour
 	{
 		UpdateUI();
 	}
+
+	#endregion
 
 	void UpdateUI()
 	{

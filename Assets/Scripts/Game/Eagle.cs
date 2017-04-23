@@ -1,26 +1,26 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Eagle : PlanetMovement
 {
+	public float speedRandomness;
 	public float huntingSpeed;
 	public float descentSpeed;
 	public float ascentSpeed;
 
-	public float speedRandomness;
+	PlayerController playerController;
 
 	bool moveLeft;
-
-	PlayerController playerController;
 	bool hunting;
 	bool returning;
 
 	PlanetPosition planetPosition;
 
 	float originalDistance;
-
 	float originalSpeed;
+
+
+	#region Unity Lifecycle
 
 	protected override void Start()
 	{
@@ -39,7 +39,7 @@ public class Eagle : PlanetMovement
 	void Update()
 	{
 		if (hunting) {
-			if (playerController.sheltered) {
+			if (playerController.Sheltered) {
 				hunting = false;
 				returning = true;
 			} else {
@@ -75,6 +75,19 @@ public class Eagle : PlanetMovement
 		}
 	}
 
+	void OnTriggerStay2D(Collider2D other)
+	{
+		if (!hunting && other.gameObject.tag == "Player") {
+			var player = other.gameObject.GetComponent<PlayerController>();
+
+			if (!player.Sheltered) {
+				StartHunt(player);
+			}
+		}
+	}
+
+	#endregion
+
 	void MoveDown()
 	{
 		planetPosition.angle = angle;
@@ -90,17 +103,6 @@ public class Eagle : PlanetMovement
 		if (Mathf.Approximately(planetPosition.distance, originalDistance)) {
 			returning = false;
 			movementSpeed = originalSpeed;
-		}
-	}
-
-	void OnTriggerStay2D(Collider2D other)
-	{
-		if (!hunting && other.gameObject.tag == "Player") {
-			var player = other.gameObject.GetComponent<PlayerController>();
-
-			if (!player.sheltered) {
-				StartHunt(player);
-			}
 		}
 	}
 

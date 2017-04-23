@@ -23,7 +23,8 @@ public class PlayerController : PlanetMovement
 	SpriteRenderer spriteRenderer;
 	Sprite originalSprite;
 
-	public bool sheltered;
+	bool sheltered;
+
 
 	public bool Sheltered {
 		get { return sheltered; }
@@ -37,6 +38,8 @@ public class PlayerController : PlanetMovement
 		movementEnergyCost = originalEnergyCost;
 		movementSpeed = originalMovementSpeed;
 	}
+
+	#region Unity Lifecycle
 
 	void Awake()
 	{
@@ -63,6 +66,8 @@ public class PlayerController : PlanetMovement
 		HandleInventoryItemsUsage();
 	}
 
+	#endregion
+
 	void Move()
 	{
 		if (sheltered) return;
@@ -86,6 +91,8 @@ public class PlayerController : PlanetMovement
 		}
 	}
 
+	#region Map items usage
+
 	void HandleActiveItems()
 	{
 		FindItemForSelection();
@@ -98,21 +105,6 @@ public class PlayerController : PlanetMovement
 				highlighted.Use();
 				highlighted = null;
 			}
-		}
-	}
-
-	void HandleInventoryItemsUsage()
-	{
-		if (Input.GetKeyDown(KeyCode.Alpha1)) {
-			PlantCarrot();
-		}
-
-		if (Input.GetKeyDown(KeyCode.Alpha2)) {
-			EatSmallCarrot();
-		}
-
-		if (Input.GetKeyDown(KeyCode.Alpha3)) {
-			EatBigCarrot();
 		}
 	}
 
@@ -148,6 +140,25 @@ public class PlayerController : PlanetMovement
 		highlighted = item;
 	}
 
+	#endregion
+
+	#region Inventory items usage
+
+	void HandleInventoryItemsUsage()
+	{
+		if (Input.GetKeyDown(KeyCode.Alpha1)) {
+			PlantCarrot();
+		}
+
+		if (Input.GetKeyDown(KeyCode.Alpha2)) {
+			EatSmallCarrot();
+		}
+
+		if (Input.GetKeyDown(KeyCode.Alpha3)) {
+			EatBigCarrot();
+		}
+	}
+
 	void PlantCarrot()
 	{
 		if (Inventory.instance.Seeds > 0) {
@@ -175,4 +186,5 @@ public class PlayerController : PlanetMovement
 		}
 	}
 
+	#endregion
 }

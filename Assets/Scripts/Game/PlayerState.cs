@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerState : MonoBehaviour
@@ -50,7 +48,7 @@ public class PlayerState : MonoBehaviour
 	void AddEnergy()
 	{
 		if (Mathf.Approximately(Input.GetAxis("Horizontal"), 0) || !(Energy > 0)) {
-			Energy += energyGain;	
+			Energy += energyGain;
 		}
 	}
 

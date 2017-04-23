@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -44,32 +42,9 @@ public class MenuController : MonoBehaviour
 	{
 		var bestTime = "N/A";
 		if (time > 0) {
-			bestTime = FormatTime(time);
+			bestTime = TimeUtils.FormatTime(time);
 		}
 
 		return "Best Time: " + bestTime;
-	}
-
-	string FormatTime(float time)
-	{
-		var elapsed = (int)time;
-		var text = "";
-
-		var min = elapsed / 60;
-		var sec = elapsed % 60;
-
-		//if (min > 0) {
-		text += min;
-		//}
-
-		text += ":";
-
-		if (sec < 10) {
-			text += "0";
-		}
-
-		text += sec;
-
-		return text;
 	}
 }

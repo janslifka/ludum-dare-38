@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
@@ -25,17 +23,18 @@ public class GameMaster : MonoBehaviour
 	public int minTrees;
 	public int maxTrees;
 
-	float startTime;
-
 	DifficultyObject currentDifficulty;
 
+	float startTime;
+
 	string difficulty;
+
 
 	public void Die()
 	{
 		deadPanel.SetActive(true);
 		var elapsed = Time.time - startTime;
-		elapsedTime.text = FormatTime(elapsed);
+		elapsedTime.text = TimeUtils.FormatTime(elapsed);
 		difficultyText.text = difficulty;
 
 		if (elapsed > PlayerPrefs.GetFloat(difficulty, 0)) {
@@ -54,6 +53,8 @@ public class GameMaster : MonoBehaviour
 	{
 		SceneManager.LoadScene("Game");
 	}
+
+	#region Unity Lifecycle
 
 	void Awake()
 	{
@@ -78,6 +79,13 @@ public class GameMaster : MonoBehaviour
 		SpawnObject(shelterPrefab, currentDifficulty.shelters - 1, 0, 360);
 		SpawnObject(treePrefab, Random.Range(minTrees, maxTrees), 0, 360);
 	}
+
+	void Update()
+	{
+		UpdateTimerText();
+	}
+
+	#endregion
 
 	void ChooseDifficulty()
 	{
@@ -113,36 +121,8 @@ public class GameMaster : MonoBehaviour
 		}
 	}
 
-	void Update()
-	{
-		UpdateTimerText();
-	}
-
 	void UpdateTimerText()
 	{
-		time.text = FormatTime(Time.time - startTime);
-	}
-
-	string FormatTime(float time)
-	{
-		var elapsed = (int)time;
-		var text = "";
-
-		var min = elapsed / 60;
-		var sec = elapsed % 60;
-
-		if (min > 0) {
-			text += min;
-		}
-
-		text += ":";
-
-		if (sec < 10) {
-			text += "0";
-		}
-
-		text += sec;
-
-		return text;
+		time.text = TimeUtils.FormatTime(Time.time - startTime);
 	}
 }

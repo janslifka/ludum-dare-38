@@ -16,8 +16,7 @@ public class Carrot : ActiveObject
 	public Sprite grownSprite;
 	public Sprite bloomSprite;
 
-	public float timeDelta;
-
+	public float lifecycleRandomness;
 	public float seedTime;
 	public float youngTime;
 	public float grownTime;
@@ -28,8 +27,22 @@ public class Carrot : ActiveObject
 	public Color highlightColor;
 	public Color standardColor;
 
-	new Collider2D collider2D;
 	public SpriteRenderer spriteRenderer;
+
+	new Collider2D collider2D;
+
+
+	#region ActiveObject
+
+	public override void Highlight()
+	{
+		spriteRenderer.color = highlightColor;
+	}
+
+	public override void Unhighlight()
+	{
+		spriteRenderer.color = standardColor;
+	}
 
 	public override void Use()
 	{
@@ -54,15 +67,9 @@ public class Carrot : ActiveObject
 		}
 	}
 
-	public override void Highlight()
-	{
-		spriteRenderer.color = highlightColor;
-	}
+	#endregion
 
-	public override void Unhighlight()
-	{
-		spriteRenderer.color = standardColor;
-	}
+	#region Unity Lifecycle
 
 	void Start()
 	{
@@ -72,6 +79,8 @@ public class Carrot : ActiveObject
 		SetState(State.Seed);
 		StartCoroutine(LifeCycle());
 	}
+
+	#endregion
 
 	void SetState(State toState)
 	{
@@ -109,7 +118,7 @@ public class Carrot : ActiveObject
 
 	float RandomizeTime(float time)
 	{
-		return time + Random.Range(-timeDelta, timeDelta);
+		return time + Random.Range(-lifecycleRandomness, lifecycleRandomness);
 	}
 
 	IEnumerator LifeCycle()

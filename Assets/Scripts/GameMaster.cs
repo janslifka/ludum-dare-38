@@ -30,6 +30,11 @@ public class GameMaster : MonoBehaviour
 		Time.timeScale = 0;
 	}
 
+	void OnValidate()
+	{
+		shelterCount = Mathf.Max(1, shelterCount);
+	}
+
 	void Awake()
 	{
 		instance = this;
@@ -41,7 +46,8 @@ public class GameMaster : MonoBehaviour
 
 		SpawnObject(eaglePrefab, eagleCount, 50, 310);
 		SpawnObject(carrotPrefab, carrotCount, -360, 360);
-		SpawnObject(shelterPrefab, shelterCount, 0, 360);
+		SpawnObject(shelterPrefab, 1, -10, 10); // 1 shelter nearby starting location
+		SpawnObject(shelterPrefab, shelterCount - 1, 0, 360);
 	}
 
 	void SpawnObject(GameObject prefab, int count, float positionFrom, float positionTo)

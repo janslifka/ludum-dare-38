@@ -4,20 +4,36 @@ using UnityEngine;
 
 public class Eagle : PlanetMovement
 {
-	public float huntSpeed;
+	public float huntingSpeed;
+	public float descentSpeed;
+	public float ascentSpeed;
+
+	public float speedRandomness;
 
 	bool moveLeft;
-
 
 	PlayerController playerController;
 	bool hunting;
 	bool returning;
-	Vector3 positionBeforeHunt;
+
+	PlanetPosition planetPosition;
+
+	float originalDistance;
+
+	float originalSpeed;
 
 	protected override void Start()
 	{
 		base.Start();
 		StartCoroutine(ChangeDirection());
+
+		planetPosition = GetComponent<PlanetPosition>();
+		angle = planetPosition.angle;
+
+		movementSpeed = movementSpeed * (1 + Random.Range(-speedRandomness, speedRandomness));
+
+		originalDistance = planetPosition.distance;
+		originalSpeed = movementSpeed;
 	}
 
 	void Update()
@@ -29,25 +45,27 @@ public class Eagle : PlanetMovement
 			} else {
 				Debug.DrawRay(transform.position, playerController.transform.position - transform.position, Color.red);
 
-				var translation = playerController.transform.position - transform.position;
-				transform.Translate(translation.normalized * huntSpeed * Time.deltaTime);
+				var vectorA = planet.position - transform.position;
+				var vectorB = planet.position - playerController.transform.position;
+				var a = Vector3.Angle(vectorA, vectorB);
 
-				FixRotation();
+				if (a > 1) {
+					var cross = Vector3.Cross(vectorA, vectorB);
+					if (cross.z > 0) {
+						MoveLeft();
+					} else {
+						MoveRight();
+					}
+				}
 
-				if (Vector3.Distance(transform.position, playerController.transform.position) < 0.3f) {
+				MoveDown();
+
+				if (Vector3.Distance(transform.position, playerController.transform.position) < 0.5f) {
 					GameMaster.instance.Die();
 				}
 			}
 		} else if (returning) {
-			var translation = positionBeforeHunt - transform.position;
-			transform.Translate(translation.normalized * huntSpeed * Time.deltaTime);
-
-			FixRotation();
-
-			if (Vector3.Distance(transform.position, positionBeforeHunt) < 0.3f) {
-				transform.position = positionBeforeHunt;
-				returning = false;
-			}
+			MoveUp();
 		} else {
 			if (moveLeft) {
 				MoveLeft();
@@ -57,12 +75,21 @@ public class Eagle : PlanetMovement
 		}
 	}
 
-	void FixRotation()
+	void MoveDown()
 	{
-		var direction = planet.position - transform.position;
-		if (direction != Vector3.zero) {
-			var newAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg + 90;
-			transform.rotation = Quaternion.AngleAxis(newAngle, Vector3.forward);
+		planetPosition.angle = angle;
+		planetPosition.distance = Mathf.Max(8.2f, planetPosition.distance - descentSpeed * Time.deltaTime);
+		planetPosition.RecalculatePosition();
+	}
+
+	void MoveUp()
+	{
+		planetPosition.distance = Mathf.Min(originalDistance, planetPosition.distance + ascentSpeed * Time.deltaTime);
+		planetPosition.RecalculatePosition();
+
+		if (Mathf.Approximately(planetPosition.distance, originalDistance)) {
+			returning = false;
+			movementSpeed = originalSpeed;
 		}
 	}
 
@@ -80,7 +107,7 @@ public class Eagle : PlanetMovement
 	void StartHunt(PlayerController player)
 	{
 		playerController = player;
-		positionBeforeHunt = transform.position;
+		movementSpeed = huntingSpeed;
 		hunting = true;
 	}
 

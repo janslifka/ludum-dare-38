@@ -15,6 +15,11 @@ public class MenuController : MonoBehaviour
 		bestTimeHard.text = FormatBestTime(PlayerPrefs.GetFloat("hard", 0));
 	}
 
+	public void QuitGame()
+	{
+		Application.Quit();
+	}
+
 	public void StartEasy()
 	{
 		PlayerPrefs.SetString("difficulty", "easy");

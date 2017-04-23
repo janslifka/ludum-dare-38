@@ -44,7 +44,6 @@ public class Inventory : MonoBehaviour
 
 	void Start()
 	{
-		seeds = 3;
 		UpdateUI();
 	}
 

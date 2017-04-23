@@ -7,36 +7,36 @@ public class GameMaster : MonoBehaviour
 {
 	public static GameMaster instance;
 
+	public DifficultyObject easy;
+	public DifficultyObject medium;
+	public DifficultyObject hard;
+
 	public Text time;
 	public GameObject deadPanel;
 	public Text elapsedTime;
+	public Text difficultyText;
 
 	public GameObject eaglePrefab;
-	public int eagleCount;
-
 	public GameObject carrotPrefab;
-	public int carrotCount;
-
 	public GameObject shelterPrefab;
-	public int shelterCount;
-
 	public GameObject treePrefab;
+
 	public int minTrees;
 	public int maxTrees;
 
 	float startTime;
 
+	DifficultyObject currentDifficulty;
+
+	string difficulty;
+
 	public void Die()
 	{
 		deadPanel.SetActive(true);
 		elapsedTime.text = FormatTime(Time.time);
+		difficultyText.text = difficulty;
 
 		Time.timeScale = 0;
-	}
-
-	void OnValidate()
-	{
-		shelterCount = Mathf.Max(1, shelterCount);
 	}
 
 	void Awake()
@@ -46,13 +46,41 @@ public class GameMaster : MonoBehaviour
 
 	void Start()
 	{
+		ChooseDifficulty();
+
 		deadPanel.SetActive(false);
 
-		SpawnObject(eaglePrefab, eagleCount, 50, 310);
-		SpawnObject(carrotPrefab, carrotCount, 0, 360);
+		InitializeInventory();
+
+		SpawnObject(eaglePrefab, currentDifficulty.eagles, 50, 310);
+		SpawnObject(carrotPrefab, currentDifficulty.carrots, 0, 360);
 		SpawnObject(shelterPrefab, 1, -10, 10); // 1 shelter nearby starting location
-		SpawnObject(shelterPrefab, shelterCount - 1, 0, 360);
+		SpawnObject(shelterPrefab, currentDifficulty.shelters - 1, 0, 360);
 		SpawnObject(treePrefab, Random.Range(minTrees, maxTrees), 0, 360);
+	}
+
+	void ChooseDifficulty()
+	{
+		difficulty = PlayerPrefs.GetString("difficulty", "easy");
+
+		if (difficulty != "easy" || difficulty != "medium" || difficulty != "hard") {
+			difficulty = "easy";
+		}
+
+		if (difficulty == "easy") {
+			currentDifficulty = easy;
+		} else if (difficulty == "medium") {
+			currentDifficulty = medium;
+		} else {
+			currentDifficulty = hard;
+		}
+	}
+
+	void InitializeInventory()
+	{
+		Inventory.instance.Seeds = currentDifficulty.invSeeds;
+		Inventory.instance.SmallCarrots = currentDifficulty.invSmallCarrots;
+		Inventory.instance.BigCarrots = currentDifficulty.invBigCarrots;
 	}
 
 	void SpawnObject(GameObject prefab, int count, float positionFrom, float positionTo)

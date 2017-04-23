@@ -40,7 +40,7 @@ public class MenuController : MonoBehaviour
 
 	string FormatBestTime(float time)
 	{
-		var bestTime = "N/A";
+		var bestTime = "?";
 		if (time > 0) {
 			bestTime = TimeUtils.FormatTime(time);
 		}

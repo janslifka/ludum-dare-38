@@ -11,6 +11,12 @@ public class GameMaster : MonoBehaviour
 	public GameObject deadPanel;
 	public Text elapsedTime;
 
+	public GameObject eaglePrefab;
+	public int eagleCount;
+
+	public GameObject carrotPrefab;
+	public int carrotCount;
+
 	float startTime;
 
 	public void Die()
@@ -29,6 +35,29 @@ public class GameMaster : MonoBehaviour
 	void Start()
 	{
 		deadPanel.SetActive(false);
+
+		SpawnEagles();
+		SpawnCarrots();
+	}
+
+	void SpawnEagles()
+	{
+		SpawnObject(eaglePrefab, eagleCount, 50, 310);
+	}
+
+	void SpawnCarrots()
+	{
+		SpawnObject(carrotPrefab, carrotCount, -360, 360);
+	}
+
+	void SpawnObject(GameObject prefab, int count, float positionFrom, float positionTo)
+	{
+		for (var i = 0; i < count; i++) {
+			var obj = (GameObject)Instantiate(prefab, Vector3.zero, Quaternion.identity);
+			var planetPosition = obj.GetComponent<PlanetPosition>();
+			planetPosition.angle = Random.Range(positionFrom, positionTo);
+			planetPosition.RecalculatePosition();
+		}
 	}
 
 	void Update()

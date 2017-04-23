@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class PlanetMovement : MonoBehaviour
 {
-	public Transform planet;
 	public float movementSpeed;
-
 	public float angle;
+
+	protected Transform planet;
+
+	protected virtual void Start()
+	{
+		planet = GameObject.Find("Planet").transform;
+	}
 
 	protected void MoveRight()
 	{

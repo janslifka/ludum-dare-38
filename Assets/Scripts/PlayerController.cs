@@ -40,8 +40,10 @@ public class PlayerController : PlanetMovement
 		instance = this;
 	}
 
-	void Start()
+	protected override void Start()
 	{
+		base.Start();
+
 		playerState = GetComponent<PlayerState>();
 		spriteRenderer = GetComponent<SpriteRenderer>();
 
